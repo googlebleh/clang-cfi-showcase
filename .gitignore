@@ -1,5 +1,9 @@
 cfi_icall
 no_cfi_icall
+libicall_dso.so
+cfi_icall_dso
+libno_cfi_icall_dso.so
+no_cfi_icall_dso
 cfi_vcall
 no_cfi_vcall
 cfi_nvcall

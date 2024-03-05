@@ -4,7 +4,7 @@ GOLD = $(shell pwd)/ld
 CFLAGS = -B${GOLD} -Weverything -Werror -pedantic -std=c99 -O0 -fvisibility=hidden -flto -fno-sanitize-trap=all 
 CXXFLAGS = -B${GOLD} -Weverything -Werror -pedantic -Wno-c++98-compat -Wno-weak-vtables -std=c++11 -O0 -fvisibility=hidden -flto -fno-sanitize-trap=all 
 
-CFI_TARGETS = check_clang_version cfi_icall cfi_vcall cfi_nvcall cfi_unrelated_cast cfi_derived_cast cfi_cast_strict
+CFI_TARGETS = cfi_icall_dso cfi_icall cfi_vcall cfi_nvcall cfi_unrelated_cast cfi_derived_cast cfi_cast_strict
 NO_CFI_TARGETS = $(addprefix no_, $(CFI_TARGETS))
 
 TARGETS = $(CFI_TARGETS) $(NO_CFI_TARGETS)
@@ -21,6 +21,20 @@ cfi_icall: cfi_icall.c
 no_cfi_icall: cfi_icall.c
 	@echo Compiling $< to $@
 	@$(CC) $(CFLAGS) -o $@ $<
+
+libicall_dso.so: libicall_dso.c libicall_dso.h
+	@$(CC) -shared $(CFLAGS) -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -o $@ $<
+
+cfi_icall_dso: cfi_icall_dso.c libicall_dso.so
+	@echo Compiling $< to $@
+	@$(CC) $(CFLAGS) -Wl,-rpath=. -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -L. -licall_dso -o $@ $<
+
+libno_cfi_icall_dso.so: libicall_dso.c libicall_dso.h
+	@$(CC) -shared $(CFLAGS) -o $@ $<
+
+no_cfi_icall_dso: cfi_icall_dso.c libno_cfi_icall_dso.so
+	@echo Compiling $< to $@
+	@$(CC) $(CFLAGS) -Wl,-rpath=. -L. -lno_cfi_icall_dso -o $@ $<
 
 cfi_vcall: cfi_vcall.cpp
 	@echo Compiling $< to $@
@@ -65,6 +79,6 @@ no_cfi_cast_strict: cfi_cast_strict.cpp
 	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -o $@ $<
 
 clean:
-	rm -f $(TARGETS)
+	rm -f $(TARGETS) libicall_dso.so libno_cfi_icall_dso.so
 
 .PHONY: clean all
