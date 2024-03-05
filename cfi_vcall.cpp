@@ -10,9 +10,9 @@ struct Base {
 
 struct Derived : Base {
     Derived() {}
-    virtual ~Derived() {}
+    virtual ~Derived() override {}
 
-    virtual void printMe() {
+    virtual void printMe() override {
         std::cout << "Derived::printMe\n";
     }
 };

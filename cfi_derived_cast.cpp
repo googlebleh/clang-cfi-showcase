@@ -9,7 +9,7 @@ struct Base {
 
 struct Derived : Base {
     Derived(const std::string &s) : Base(s) {}
-    virtual ~Derived() {}
+    virtual ~Derived() override {}
 
     const unsigned long variable  = 0x12345678;
 

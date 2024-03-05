@@ -13,7 +13,7 @@ struct Account {
 
 struct UserAccount : Account {
     UserAccount(const std::string &s) : Account(s) {}
-    virtual ~UserAccount() {}
+    virtual ~UserAccount() override {}
     void adminStuff() { 
         std::cout << "Admin Work not permitted for a user account!" << std::endl;
     }
@@ -21,7 +21,7 @@ struct UserAccount : Account {
 
 struct AdminAccount : Account {
     AdminAccount(const std::string &s) : Account(s) {}
-    virtual ~AdminAccount() {}
+    virtual ~AdminAccount() override {}
     void adminStuff() { 
         std::cout << "Would do admin work in context of: " << this->name << std::endl;
     }
