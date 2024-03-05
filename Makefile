@@ -15,68 +15,54 @@ check_clang_version:
 	dpkg --compare-versions "$(shell ${CC} -dumpversion)" "ge" "3.9"
 
 cfi_icall: cfi_icall.c
-	@echo Compiling $< to $@
-	@$(CC) $(CFLAGS) -fsanitize=cfi-icall -o $@ $<
+	$(CC) $(CFLAGS) -fsanitize=cfi-icall -o $@ $<
 
 no_cfi_icall: cfi_icall.c
-	@echo Compiling $< to $@
-	@$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
 libicall_dso.so: libicall_dso.c libicall_dso.h
-	@$(CC) -shared $(CFLAGS) -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -o $@ $<
+	$(CC) -shared $(CFLAGS) -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -o $@ $<
 
 cfi_icall_dso: cfi_icall_dso.c libicall_dso.so
-	@echo Compiling $< to $@
-	@$(CC) $(CFLAGS) -Wl,-rpath=. -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -L. -licall_dso -o $@ $<
+	$(CC) $(CFLAGS) -Wl,-rpath=. -fsanitize=cfi-icall -fsanitize-cfi-cross-dso -L. -licall_dso -o $@ $<
 
 libno_cfi_icall_dso.so: libicall_dso.c libicall_dso.h
-	@$(CC) -shared $(CFLAGS) -o $@ $<
+	$(CC) -shared $(CFLAGS) -o $@ $<
 
 no_cfi_icall_dso: cfi_icall_dso.c libno_cfi_icall_dso.so
-	@echo Compiling $< to $@
-	@$(CC) $(CFLAGS) -Wl,-rpath=. -L. -lno_cfi_icall_dso -o $@ $<
+	$(CC) $(CFLAGS) -Wl,-rpath=. -L. -lno_cfi_icall_dso -o $@ $<
 
 cfi_vcall: cfi_vcall.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-vcall -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-vcall -o $@ $<
 
 no_cfi_vcall: cfi_vcall.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 cfi_nvcall: cfi_nvcall.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-nvcall -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-nvcall -o $@ $<
 
 no_cfi_nvcall: cfi_nvcall.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 cfi_unrelated_cast: cfi_unrelated_cast.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-unrelated-cast -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-unrelated-cast -o $@ $<
 
 no_cfi_unrelated_cast: cfi_unrelated_cast.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 cfi_derived_cast: cfi_derived_cast.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -o $@ $<
 
 no_cfi_derived_cast: cfi_derived_cast.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 cfi_cast_strict: cfi_cast_strict.cpp
-	@echo Compiling $< to $@
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -fsanitize=cfi-cast-strict -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -fsanitize=cfi-cast-strict -o $@ $<
 
 no_cfi_cast_strict: cfi_cast_strict.cpp
-	@echo Compiling $< to $@
 	@# still use cfi-derived-cast, just not the strict version to
 	@# show the strict version behavior
-	@$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -o $@ $<
+	$(CXX) $(CXXFLAGS) -fsanitize=cfi-derived-cast -o $@ $<
 
 clean:
 	rm -f $(TARGETS) libicall_dso.so libno_cfi_icall_dso.so
