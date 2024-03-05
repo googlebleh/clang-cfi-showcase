@@ -62,7 +62,11 @@ static struct foo f = {
     .not_entries = {(int_arg_fn)((uintptr_t)(not_entry_point)+0x20)}
 };
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunsafe-buffer-usage"
 int main(int argc, const char *argv[]) {
+#pragma clang diagnostic pop
+    int idx;
 
     if(argc != 2) {
         printf("Usage: %s <option>\n", argv[0]);
@@ -84,7 +88,7 @@ int main(int argc, const char *argv[]) {
 
     printf("Calling a function:\n");
 
-    int idx = argv[1][0] - '0';
+    idx = argv[1][0] - '0';
 
     return f.int_funcs[idx](idx);
 }
