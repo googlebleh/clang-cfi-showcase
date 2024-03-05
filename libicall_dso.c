@@ -3,24 +3,24 @@
 
 #include "libicall_dso.h"
 
-int int_arg(int arg) {
+int __attribute__((visibility("default"))) int_arg(int arg) {
     printf("In %s: (%d)\n", __FUNCTION__, arg);
     return 0;
 }
 
-int float_arg(float arg) {
+int __attribute__((visibility("default"))) float_arg(float arg) {
     printf("CFI should protect transfer to here\n");
     printf("In %s: (%f)\n", __FUNCTION__, (double)arg);
     return 0;
 }
 
-int bad_int_arg(int arg) {
+int __attribute__((visibility("default"))) bad_int_arg(int arg) {
     printf("CFI will not protect transfer to here\n");
     printf("In %s: (%d)\n", __FUNCTION__, arg);
     return 0;
 }
 
-int not_entry_point(int arg) {
+int __attribute__((visibility("default"))) not_entry_point(int arg) {
     // nop sled for x86 / x86-64
     // these instructions act as a buffer
     // for an indirect control flow transfer to skip
