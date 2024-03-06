@@ -29,7 +29,7 @@ int main(int argc, const char *argv[]) {
 #pragma clang diagnostic pop
     int idx;
 
-    if(argc != 2) {
+    if (argc < 2) {
         printf("Usage: %s <option>\n", argv[0]);
         printf("Option values:\n");
         printf("\t0\tCall correct function\n");
@@ -50,6 +50,12 @@ int main(int argc, const char *argv[]) {
     printf("Calling a function:\n");
 
     idx = argv[1][0] - '0';
+
+    if (idx == 9) {
+        printf("\tleak in .so: %p\n", (void *)f.int_funcs[0]);
+        scanf("%p", (void **)f.int_funcs);
+        idx = 0;
+    }
 
     return f.int_funcs[idx](idx);
 }

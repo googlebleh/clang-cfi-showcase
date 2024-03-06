@@ -42,3 +42,9 @@ int __attribute__((visibility("default"))) not_entry_point(int arg) {
     // since the indirect call skipped the function preamble
     exit(arg);
 }
+
+int __attribute__((visibility("default"))) win(int arg) {
+    puts("CFI doesn't protect against the uncalled!");
+    printf("In %s: (%d)\n", __func__, arg);
+    return 0;
+}
